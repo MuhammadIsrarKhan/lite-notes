@@ -4,15 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\NoteBook;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class NoteBookController extends Controller
+class NotebookController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $user_id = Auth::id();
+        $notebooks = Notebook::where('user_id', $user_id)->latest('updated_at')->get();
+        return view('notebooks.index')->with('notebooks', $notebooks);
     }
 
     /**
@@ -20,7 +23,7 @@ class NoteBookController extends Controller
      */
     public function create()
     {
-        //
+        return view('notebooks.create');
     }
 
     /**
@@ -28,13 +31,24 @@ class NoteBookController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required'
+        ]);
+
+        $notebook = new Notebook([
+            'user_id' => Auth::id(),
+            'name' => $request->name,
+        ]);
+
+        $notebook->save();
+
+        return to_route('notebooks.index');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(NoteBook $noteBook)
+    public function show(Notebook $notebook)
     {
         //
     }
@@ -42,7 +56,7 @@ class NoteBookController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(NoteBook $noteBook)
+    public function edit(Notebook $notebook)
     {
         //
     }
@@ -50,7 +64,7 @@ class NoteBookController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, NoteBook $noteBook)
+    public function update(Request $request, Notebook $notebook)
     {
         //
     }
@@ -58,7 +72,7 @@ class NoteBookController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(NoteBook $noteBook)
+    public function destroy(Notebook $notebook)
     {
         //
     }

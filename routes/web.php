@@ -3,6 +3,7 @@
 use App\Http\Controllers\NoteBookController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TrashedNoteController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,3 +20,10 @@ require __DIR__.'/auth.php';
 
 Route::resource('notes',NoteController::class)->middleware('auth');
 Route::resource('notebooks',NoteBookController::class)->middleware('auth');
+
+Route::prefix('/trashed')->name('trashed.')->middleware('auth')->group(function() {
+    Route::get('/', [TrashedNoteController::class, 'index'])->name('index');
+    Route::get('/{note}', [TrashedNoteController::class, 'show'])->withTrashed()->name('show');
+    Route::put('/{note}', [TrashedNoteController::class, 'update'])->withTrashed()->name('update');
+    Route::delete('/{note}', [TrashedNoteController::class, 'destroy'])->withTrashed()->name('destroy');
+});

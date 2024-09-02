@@ -15,7 +15,6 @@ class NoteController extends Controller
      */
     public function index()
     {
-        $user_id = Auth::id();
         $notes = Auth::user()->notes()->latest('updated_at')->paginate(5);
         return view('notes.index')->with('notes', $notes);
     }
@@ -99,6 +98,6 @@ class NoteController extends Controller
             abort(403);
         }
         $note->delete();
-        return to_route('notes.index')->with('success',"Deleted");
+        return to_route('notes.index')->with('success',"Note moved to trash!");
     }
 }
